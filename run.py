@@ -12,16 +12,18 @@ current_dir = os.path.dirname(os.path.realpath(__file__))
 
 # fonts
 fonts_dir = os.path.join(current_dir, 'fonts')
-regular = ttfonts.TTFont('regular', os.path.join(fonts_dir, 'OpenSans-Bold.ttf'))
-bold = ttfonts.TTFont('bold', os.path.join(fonts_dir, 'OpenSans-Regular.ttf'))
+regular = ttfonts.TTFont('bold', os.path.join(fonts_dir, 'OpenSans-Bold.ttf'))
+bold = ttfonts.TTFont('regular', os.path.join(fonts_dir, 'OpenSans-Regular.ttf'))
 registerFont(regular), registerFont(bold)
 
 # setting canvas and constants
 c = canvas.Canvas("barcodes.pdf")
+# width_canvas = 50
+# height_canvas = 70
+indent_percent_horizontal = 5
+indent_percent_vertical = 10
 width_page = 50
 height_page = 70
-indent_percent_vertical = 10
-indent_percent_horizontal = 5
 left_indent = width_page * indent_percent_horizontal / 100
 right_indent = width_page * indent_percent_horizontal / 100
 top_indent = height_page * indent_percent_vertical / 100
@@ -67,7 +69,7 @@ def generate_text_strings_middle(height_page: int, font_size: int, space_vertica
         string_width = stringWidth(text, 'bold', current_font_size, encoding='utf8')
         x = (width_page - string_width) / 2
         y = start_height_position - font_size * i - font_size - space_vertical
-        c.setFont('bold', current_font_size)
+        c.setFont('regular', current_font_size)
         c.drawString(x, y, text)
     return y
 
@@ -77,14 +79,13 @@ def generate_text_strings_bottom(height_page: int, font_size: int, space_vertica
     """
     to put values into label string by string with auto-stretching
     """
-    for i, k in text_values3.items():
-        print(i, k)
-    print(len(text_values3.items()))
+
     for (key, value), i in zip(text_values3.items(), range(len(text_values3.items()))):
 
         # auto-stretching by finding right font_size depending of width text-string
         current_font_size = font_size
-        key_width = stringWidth(key, 'bold', font_size_default, encoding='utf8')
+        if i==0:
+            key_width = stringWidth(key, 'bold', font_size_default, encoding='utf8')
 
         while stringWidth(value, 'bold', current_font_size, encoding='utf8') > (width_page - key_width):
             current_font_size -= 0.01
@@ -92,7 +93,7 @@ def generate_text_strings_bottom(height_page: int, font_size: int, space_vertica
         x_key = space_horizontal_default
         x_value = key_width + space_horizontal_default + 1
         y_key = y_value = start_height_position - font_size - font_size * i - space_vertical
-        c.setFont('bold', font_size_default)
+        c.setFont('regular', font_size_default)
         c.drawString(x_key, y_key, key)
         c.setFont('bold', current_font_size)
         c.drawString(x_value, y_value, value)
@@ -103,13 +104,13 @@ def createBarCodes():
     """
     Create barcode examples and embed in a PDF
     """
-    text_values = ['ELENA CHEZELLE',
-                   'Свадебное платье']
+    text_values = ['AMOUR BRIDAL',
+                   'Свадебные туфли']
 
-    text_values2 = ['NP100062LX-142C']
+    text_values2 = ['NP100062LX-142C-E-IVORY']
 
-    text_values3 = {'Арт.:': 'Светло-бежевый',
-                    'Разм.': '40'}
+    text_values3 = {'Арт.:': 'Розовый',
+                    'Разм.': 'Free-size'}
 
     y = generate_text_strings_top(height_page, font_size, space_vertical_default, text_values)
     y = generate_text_strings_middle(height_page, font_size, space_vertical_default, text_values2, y)
