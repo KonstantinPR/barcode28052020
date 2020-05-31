@@ -62,21 +62,16 @@ def createBarCodes():
         c.setPageSize((width_canvas, height_canvas))
         c.setFont('bold', font_size)
 
-
-
         header_info_values = header_info_values
-
         middle_art_values = middle_art_values
-
         middle_info_values = middle_info_values
 
 
         y, c = generate_text_strings_top(height_page, font_size, space_vertical_default, header_info_values[i], c)
         y, c = generate_text_strings_middle(height_page, font_size, space_vertical_default, middle_art_values[i], y, c)
         c = generate_text_strings_bottom(height_page, font_size, space_vertical_default, middle_info_values[i], y, c)
-        print(barcode_info_values[i][0])
         barcode_value = barcode_info_values[i][0]
-
+        print(barcode_info_values[i][0])
         barcode_eanbc13 = eanbc.Ean13BarcodeWidget(barcode_value)
         barcode_eanbc13.fontSize = fontSize_barcode
         barcode_eanbc13.barHeight = barHeight_barcode
@@ -97,7 +92,6 @@ def loading_table(path, header_info: list, middle_art: list, middle_info: list, 
     middle_info_values = []
     for i in range(len_row_table):
         middle_info_values.append(dict(zip(middle_info, middle_info_values_list[i])))
-    print(middle_info_values)
     barcode_info_values = df[barcode_info].values.tolist()
     return len_row_table, header_info_values, middle_art_values, middle_info_values, barcode_info_values
 
@@ -142,7 +136,6 @@ def generate_text_strings_bottom(height_page: float, font_size: int, space_verti
     """
     to put values into label string by string with auto-stretching
     """
-    print(text_values3)
     for (key, value), i in zip(text_values3.items(), range(len(text_values3.items()))):
         key, value = str(key), str(value)
 
@@ -150,14 +143,9 @@ def generate_text_strings_bottom(height_page: float, font_size: int, space_verti
         current_font_size = font_size
         if i == 0:
             key_width = stringWidth(key, 'bold', font_size_default, encoding='utf8')
-            print(key_width)
-            print(value)
-        print(stringWidth(value, 'bold', current_font_size, encoding='utf8'))
-        print(width_page - key_width - left_indent * 2)
         while stringWidth(value, 'bold', current_font_size, encoding='utf8') > \
                 (width_page - key_width - left_indent * 2):
             current_font_size -= 0.1
-            print(current_font_size)
 
         x_key = space_horizontal_default
         x_value = key_width + space_horizontal_default + 1
