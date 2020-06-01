@@ -10,6 +10,12 @@ from reportlab.graphics import renderPDF
 import pandas as pd
 
 current_dir = os.path.dirname(os.path.realpath(__file__))
+file = current_dir + '/example.xlsx'
+
+header_info = ["Торговая марка", "Вид"]
+middle_art = ["Арт.:"]
+middle_info = ["Цвет:", "Разм:"]
+barcode_info = ["Штрихкод"]
 
 # fonts
 fonts_dir = os.path.join(current_dir, 'fonts')
@@ -17,8 +23,7 @@ regular = ttfonts.TTFont('bold', os.path.join(fonts_dir, 'OpenSans-Bold.ttf'))
 bold = ttfonts.TTFont('regular', os.path.join(fonts_dir, 'OpenSans-Regular.ttf'))
 registerFont(regular), registerFont(bold)
 
-# setting canvas and constants
-
+# setting constants
 width_canvas = 50
 height_canvas = 70
 width_page = width_canvas * 0.98
@@ -37,25 +42,14 @@ fontSize_barcode = 3
 barHeight_barcode = 10
 barWidth_barcode = 0.45
 
-header_info = ["Торговая марка", "Вид"]
-middle_art = ["Арт.:"]
-middle_info = ["Цвет:", "Разм:"]
-barcode_info = ["Штрихкод"]
 
-
-def createBarCodes():
+def generate_labels():
     """
-    Create barcode examples and embed in a PDF
+    Add all information about good into the label
     """
 
     len_row_table, header_info_values, middle_art_values, middle_info_values, barcode_info_values = \
-        loading_table('E:/python/env/barcode28052020/example.xlsx',
-                      header_info,
-                      middle_art,
-                      middle_info,
-                      barcode_info)
-
-    print(middle_info_values)
+        loading_table(file, header_info, middle_art, middle_info, barcode_info)
 
     for i in range(len_row_table):
         c = canvas.Canvas(f"barcodes{i}.pdf")
@@ -66,12 +60,10 @@ def createBarCodes():
         middle_art_values = middle_art_values
         middle_info_values = middle_info_values
 
-
         y, c = generate_text_strings_top(height_page, font_size, space_vertical_default, header_info_values[i], c)
         y, c = generate_text_strings_middle(height_page, font_size, space_vertical_default, middle_art_values[i], y, c)
         c = generate_text_strings_bottom(height_page, font_size, space_vertical_default, middle_info_values[i], y, c)
         barcode_value = barcode_info_values[i][0]
-        print(barcode_info_values[i][0])
         barcode_eanbc13 = eanbc.Ean13BarcodeWidget(barcode_value)
         barcode_eanbc13.fontSize = fontSize_barcode
         barcode_eanbc13.barHeight = barHeight_barcode
@@ -158,4 +150,4 @@ def generate_text_strings_bottom(height_page: float, font_size: int, space_verti
 
 
 if __name__ == '__main__':
-    createBarCodes()
+    generate_labels()
